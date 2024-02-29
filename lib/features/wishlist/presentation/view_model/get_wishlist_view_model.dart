@@ -1,35 +1,27 @@
 import 'package:final_project/features/wishlist/data/data_source/wishlist_remote_data_source.dart';
-import 'package:final_project/features/wishlist/domain/entity/wishlist_entity.dart';
-import 'package:final_project/features/wishlist/presentation/state/wishlist_state.dart';
+import 'package:final_project/features/wishlist/presentation/state/wishlists_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final getWishlistViewModelProvider =
-    StateNotifierProvider<GetWishlistViewModel, WishlistState>((ref) {
+    StateNotifierProvider<GetWishlistViewModel, WishlistsState>((ref) {
   final wishlistRemoteDataSource = ref.read(wishlistRemoteDataSourceProvider);
   return GetWishlistViewModel(wishlistRemoteDataSource);
 });
  
-class GetWishlistViewModel extends StateNotifier<WishlistState> {
+class GetWishlistViewModel extends StateNotifier<WishlistsState> {
   final WishlistRemoteDataSource wishlistRemoteDataSource;
  
   GetWishlistViewModel(this.wishlistRemoteDataSource)
-      : super(WishlistState.initialState()) {
+      : super(WishlistsState.initialState()) {
     getWishlist();
   }
  
  
   Future resetState() async {
-    state = WishlistState.initialState();
+    state = WishlistsState.initialState();
     getWishlist();
   }
- 
-  Future<void> deleteWishlist(WishlistEntity wishlistId) async {
-    try {
-      await wishlistRemoteDataSource.deleteWishlist(wishlistId);
-    } catch (error) {
-      print(error.toString());
-    }
-  }
+
   Future getWishlist() async {
     state = state.copywith(isLoading: true);
  

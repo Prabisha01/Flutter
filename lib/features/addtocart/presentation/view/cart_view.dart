@@ -1,6 +1,7 @@
+import 'package:final_project/features/addtocart/domain/entity/cart_entity.dart';
+import 'package:final_project/features/addtocart/domain/entity/carts_entity.dart';
 import 'package:final_project/features/addtocart/presentation/view_model/cart_viewmodel.dart';
 import 'package:final_project/features/addtocart/presentation/view_model/get_viewmodel.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -13,6 +14,7 @@ class CartView extends ConsumerStatefulWidget {
 
 class _CartViewState extends ConsumerState<CartView> {
   final ScrollController _scrollController = ScrollController();
+  late List<CartsEntity> cartList;
 
   @override
   void dispose() {
@@ -21,8 +23,17 @@ class _CartViewState extends ConsumerState<CartView> {
   }
 
   @override
+  void initState() {
+    // ref.read(getCartViewModelProvider.notifier).getCart();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final cartState = ref.watch(getCartViewModelProvider);
+    final cartState = ref.watch(cartViewModelProvider);
+    final cartsState = ref.watch(getCartViewModelProvider);
+    print('cartState: ${cartState.carts}');
+    cartList = cartsState.carts;
 
     return Scaffold(
       appBar: AppBar(
@@ -51,9 +62,18 @@ class _CartViewState extends ConsumerState<CartView> {
                 },
                 child: ListView.builder(
                   controller: _scrollController,
-                  itemCount: cartState.carts.length,
+                  itemCount: cartList.length ?? 0,
                   itemBuilder: (context, index) {
-                    final cart = cartState.carts[index];
+                    final cart = cartList[index];
+                    final plantId = cartList[index].plantId;
+                    final cartId = cartList[index].cartId as String;
+                    final quantity = cartList[index].quantity;
+                    final addedAt = cartList[index].addedAt;
+                    final cartEntity = CartEntity(
+                        cartId: cartId,
+                        plantId: plantId?['_id'] as String,
+                        quantity: quantity,
+                        addedAt: addedAt);
                     return Card(
                       elevation: 3,
                       shape: RoundedRectangleBorder(
@@ -61,8 +81,14 @@ class _CartViewState extends ConsumerState<CartView> {
                       ),
                       child: ListTile(
                         contentPadding: const EdgeInsets.all(15),
+                        leading: Image.network(
+                          plantId?['plantImageUrl'] as String,
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.cover,
+                        ),
                         title: Text(
-                          cart.plantId!,
+                          cart.plantId?['plantName'] as String,
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -75,8 +101,8 @@ class _CartViewState extends ConsumerState<CartView> {
                           ),
                           onPressed: () {
                             ref
-                                .read(getCartViewModelProvider.notifier)
-                                .removeFromCart(cart);
+                                .read(cartViewModelProvider.notifier)
+                                .removeFromCart(cartEntity);
                           },
                         ),
                       ),

@@ -11,7 +11,7 @@ GetWishlistDTO _$GetWishlistDTOFromJson(Map<String, dynamic> json) =>
       success: json['success'] as bool,
       message: json['message'] as String,
       wishlists: (json['wishlists'] as List<dynamic>)
-          .map((e) => WishlistAPIModel.fromJson(e as Map<String, dynamic>))
+          .map((e) => WishlistsAPIModel.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 

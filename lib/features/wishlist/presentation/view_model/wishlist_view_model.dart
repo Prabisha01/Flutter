@@ -1,4 +1,5 @@
 
+import 'package:final_project/features/wishlist/data/data_source/wishlist_remote_data_source.dart';
 import 'package:final_project/features/wishlist/domain/entity/wishlist_entity.dart';
 import 'package:final_project/features/wishlist/domain/use_case/add_to_wishlist.dart';
 import 'package:final_project/features/wishlist/presentation/state/wishlist_state.dart';
@@ -9,14 +10,17 @@ final wishlistViewModelProvider =
     StateNotifierProvider<WishlistViewModel, WishlistState>(
   (ref) => WishlistViewModel(
     ref.read(addToWishlistUseCaseProvider),
+    ref.read(wishlistRemoteDataSourceProvider),
   ),
 );
 
 class WishlistViewModel extends StateNotifier<WishlistState> {
   final AddToWishlistUseCase _addToWishlistUseCase;
+  final WishlistRemoteDataSource wishlistRemoteDataSource;
 
   WishlistViewModel(
     this._addToWishlistUseCase,
+    this.wishlistRemoteDataSource
   ) : super(WishlistState.initialState());
 
   Future<void> addToWishlist(
@@ -29,6 +33,14 @@ class WishlistViewModel extends StateNotifier<WishlistState> {
       (success) => state = state.copywith(isLoading: false, showMessage: true),
     );
     // showSnackBar(message: state.message!, context: context);
+  }
+   
+  Future<void> deleteWishlist(WishlistEntity wishlistId) async {
+    try {
+      await wishlistRemoteDataSource.deleteWishlist(wishlistId);
+    } catch (error) {
+      print(error.toString());
+    }
   }
 
   void reset() {

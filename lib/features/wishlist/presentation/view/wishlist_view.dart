@@ -1,3 +1,5 @@
+import 'package:final_project/features/wishlist/domain/entity/wishlist_entity.dart';
+import 'package:final_project/features/wishlist/domain/entity/wishlists_entity.dart';
 import 'package:final_project/features/wishlist/presentation/view_model/get_wishlist_view_model.dart';
 import 'package:final_project/features/wishlist/presentation/view_model/wishlist_view_model.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +14,12 @@ class WishlistView extends ConsumerStatefulWidget {
 
 class _WishlistViewState extends ConsumerState<WishlistView> {
   final ScrollController _scrollController = ScrollController();
+  late List<WishlistsEntity> wishlistList;
+  @override
+  void initState() {
+    ref.read(getWishlistViewModelProvider.notifier).getWishlist();
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -21,7 +29,10 @@ class _WishlistViewState extends ConsumerState<WishlistView> {
 
   @override
   Widget build(BuildContext context) {
-    final wishlistState = ref.watch(getWishlistViewModelProvider);
+    final wishlistState = ref.watch(wishlistViewModelProvider);
+    final wishlistsState = ref.watch(getWishlistViewModelProvider);
+    wishlistList = wishlistsState.wishlists;
+    print('wishlistState: ${wishlistsState.wishlists}');
 
     return Scaffold(
       appBar: AppBar(
@@ -52,9 +63,19 @@ class _WishlistViewState extends ConsumerState<WishlistView> {
                 },
                 child: ListView.builder(
                   controller: _scrollController,
-                  itemCount: wishlistState.wishlists.length,
+                  itemCount: wishlistList.length ?? 0,
                   itemBuilder: (context, index) {
-                    final wishlist = wishlistState.wishlists[index];
+                    final wishlist = wishlistList[index];
+                    final plantId = wishlist.plantId;
+                    final wishlistId = wishlist.wishlistId;
+                    final userId = wishlist.userId;
+                    final addedAt = wishlist.addedAt;
+                    final wishlistEntity = WishlistEntity(
+                      wishlistId: wishlistId,
+                      userId: userId,
+                      plantId: plantId?['_id'] as String,
+                      addedAt: addedAt,
+                    );
                     return Card(
                       elevation: 3,
                       shape: RoundedRectangleBorder(
@@ -62,8 +83,14 @@ class _WishlistViewState extends ConsumerState<WishlistView> {
                       ),
                       child: ListTile(
                         contentPadding: const EdgeInsets.all(15),
+                        leading: Image.network(
+                          plantId?['plantImageUrl'] as String,
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.cover,
+                        ),
                         title: Text(
-                          wishlist.plantId!,
+                          wishlist.plantId?['plantName'],
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -76,8 +103,8 @@ class _WishlistViewState extends ConsumerState<WishlistView> {
                           ),
                           onPressed: () {
                             ref
-                                .read(getWishlistViewModelProvider.notifier)
-                                .deleteWishlist(wishlist);
+                                .read(wishlistViewModelProvider.notifier)
+                                .deleteWishlist(wishlistEntity);
                           },
                         ),
                       ),

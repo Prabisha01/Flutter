@@ -10,7 +10,7 @@ GetCartDTO _$GetCartDTOFromJson(Map<String, dynamic> json) => GetCartDTO(
       success: json['success'] as bool,
       message: json['message'] as String,
       carts: (json['carts'] as List<dynamic>)
-          .map((e) => CartAPIModel.fromJson(e as Map<String, dynamic>))
+          .map((e) => CartsAPIModel.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 

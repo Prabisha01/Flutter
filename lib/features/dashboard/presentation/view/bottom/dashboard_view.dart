@@ -1,8 +1,11 @@
 import 'package:final_project/core/common/provider/is_dark_theme.dart';
+import 'package:final_project/features/addtocart/domain/entity/carts_entity.dart';
+import 'package:final_project/features/addtocart/presentation/view_model/get_viewmodel.dart';
 import 'package:final_project/features/product/domain/entity/nursy_entity.dart';
 import 'package:final_project/features/product/presentation/view_model/nursy_view_model.dart';
+import 'package:final_project/features/wishlist/domain/entity/wishlists_entity.dart';
+import 'package:final_project/features/wishlist/presentation/view_model/get_wishlist_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DashboardView extends ConsumerStatefulWidget {
@@ -33,12 +36,16 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
   @override
   Widget build(BuildContext context) {
     final nursyState = ref.watch(nursyViewModelProvider);
+    ref.read(getCartViewModelProvider);
+    ref.read(getWishlistViewModelProvider);
     List<NursyEntity?>? products = nursyState.products;
-
+    List<CartsEntity> carts = ref.watch(getCartViewModelProvider).carts;
+    List<WishlistsEntity?> wishlist =
+        ref.watch(getWishlistViewModelProvider).wishlists;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Welcome'),
-        actions: [
+        actions: const [
           // Switch(
           //   value: isDark,
           //   onChanged: (value) {
@@ -51,7 +58,7 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
         ],
       ),
       body: ListView.builder(
-        itemCount: products?.length ?? 0,
+        itemCount: products.length ?? 0,
         itemBuilder: (context, index) {
           NursyEntity? product = products[index];
           String truncatedDescription =

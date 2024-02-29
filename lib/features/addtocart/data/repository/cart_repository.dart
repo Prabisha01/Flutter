@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:final_project/core/failure/failure.dart';
 import 'package:final_project/features/addtocart/data/data_source/cart_data_source.dart';
 import 'package:final_project/features/addtocart/domain/entity/cart_entity.dart';
+import 'package:final_project/features/addtocart/domain/entity/carts_entity.dart';
 import 'package:final_project/features/addtocart/domain/repository/cart_remote_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -23,7 +24,7 @@ class CartRemoteRepository implements ICartRepository {
   
   
   @override
-  Future<Either<Failure, List<CartEntity>>> getCart(int page) {
+  Future<Either<Failure, List<CartsEntity>>> getCart(int page) {
     return _cartRemoteDataSource.getCart(page);
   }
   

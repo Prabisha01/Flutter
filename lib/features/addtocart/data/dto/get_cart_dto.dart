@@ -1,5 +1,5 @@
+import 'package:final_project/features/addtocart/data/model/cart_api_model.dart';
 import 'package:final_project/features/addtocart/data/model/cart_model.dart';
-import 'package:final_project/features/wishlist/data/model/wishlist_api_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'get_cart_dto.g.dart';
@@ -9,7 +9,7 @@ class GetCartDTO {
   final bool success;
   final String message;
   @JsonKey(name: 'carts')
-  final List<CartAPIModel> carts;
+  final List<CartsAPIModel> carts;
 
   GetCartDTO({
     required this.success,

@@ -6,7 +6,9 @@ import 'package:final_project/core/network/remote/http_service.dart';
 import 'package:final_project/core/shares_prefs/user_shared_prefs.dart';
 import 'package:final_project/features/wishlist/data/dto/get_wishlist_dto.dart';
 import 'package:final_project/features/wishlist/data/model/wishlist_api_model.dart';
+import 'package:final_project/features/wishlist/data/model/wishlists_api_model.dart';
 import 'package:final_project/features/wishlist/domain/entity/wishlist_entity.dart';
+import 'package:final_project/features/wishlist/domain/entity/wishlists_entity.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final wishlistRemoteDataSourceProvider = Provider<WishlistRemoteDataSource>(
@@ -41,7 +43,7 @@ class WishlistRemoteDataSource {
         ),
       );
     }
-  } on DioError catch (e) {
+  } on DioException catch (e) {
 
     return Left(
       Failure(
@@ -52,7 +54,7 @@ class WishlistRemoteDataSource {
   }
 }
 
-  Future<Either<Failure, List<WishlistEntity>>> getWishlist(int page) async {
+  Future<Either<Failure, List<WishlistsEntity>>> getWishlist(int page) async {
     try {
       final userData = await userSharedPrefs.getUser();
       if (userData == null || userData['_id'] == null) {
@@ -68,8 +70,8 @@ class WishlistRemoteDataSource {
 
       if (response.statusCode == 200) {
         GetWishlistDTO getWishlistDTO = GetWishlistDTO.fromJson(response.data);
-        List<WishlistEntity> wishlistList = getWishlistDTO.wishlists
-            .map((data) => WishlistAPIModel.toEntity(data))
+        List<WishlistsEntity> wishlistList = getWishlistDTO.wishlists
+            .map((data) => WishlistsAPIModel.toEntity(data))
             .toList();
 
         return Right(wishlistList);

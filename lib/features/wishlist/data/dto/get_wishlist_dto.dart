@@ -1,4 +1,5 @@
 import 'package:final_project/features/wishlist/data/model/wishlist_api_model.dart';
+import 'package:final_project/features/wishlist/data/model/wishlists_api_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'get_wishlist_dto.g.dart';
@@ -9,7 +10,7 @@ class GetWishlistDTO {
   final bool success;
   final String message;
   @JsonKey(name: 'wishlists')
-  final List<WishlistAPIModel> wishlists;
+  final List<WishlistsAPIModel> wishlists;
  
   GetWishlistDTO({
     required this.success,

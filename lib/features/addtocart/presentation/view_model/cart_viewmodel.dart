@@ -1,3 +1,4 @@
+import 'package:final_project/features/addtocart/data/data_source/cart_data_source.dart';
 import 'package:final_project/features/addtocart/domain/entity/cart_entity.dart';
 import 'package:final_project/features/addtocart/domain/usecase/addtocart_usecase.dart';
 import 'package:final_project/features/addtocart/presentation/state/cart_sate.dart';
@@ -10,15 +11,18 @@ final cartViewModelProvider =
     StateNotifierProvider<CartViewModel, CartState>(
   (ref) => CartViewModel(
     ref.read(addToCartUseCaseProvider),
+    ref.read(cartRemoteDataSourceProvider),
     // Add other dependencies if needed
   ),
 );
 
 class CartViewModel extends StateNotifier<CartState> {
   final AddToCartUseCase _addToCartUseCase;
+    final CartRemoteDataSource cartRemoteDataSource;
 
   CartViewModel(
     this._addToCartUseCase,
+    this.cartRemoteDataSource,
   ) : super(CartState.initialState());
 
   Future<void> addToCart(
@@ -32,8 +36,14 @@ class CartViewModel extends StateNotifier<CartState> {
     );
     // showSnackBar(message: state.message!, context: context);
   }
-
-  // Implement other cart-related methods and logic here
+Future<void> removeFromCart(CartEntity cartId) async {
+    try {
+      await cartRemoteDataSource.removeFromCart(cartId);
+    } catch (error) {
+      print(error.toString());
+    }
+  }
+  
 
   void reset() {
     state = state.copyWith(

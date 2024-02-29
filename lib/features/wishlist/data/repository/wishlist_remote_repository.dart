@@ -3,6 +3,7 @@ import 'package:dartz/dartz.dart';
 import 'package:final_project/core/failure/failure.dart';
 import 'package:final_project/features/wishlist/data/data_source/wishlist_remote_data_source.dart';
 import 'package:final_project/features/wishlist/domain/entity/wishlist_entity.dart';
+import 'package:final_project/features/wishlist/domain/entity/wishlists_entity.dart';
 import 'package:final_project/features/wishlist/domain/repository/wishlist_repository.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,7 +27,7 @@ class WishlistRemoteRepository implements IWishlistRepository{
     return result.fold((failure)=>Left(failure),(sucess)=> Right(sucess));
   }
   @override
-  Future<Either<Failure, List<WishlistEntity>>> getWishlist(int page) {
+  Future<Either<Failure, List<WishlistsEntity>>> getWishlist(int page) {
     return _wishlistRemoteDataSource.getWishlist(page);
   }
 
